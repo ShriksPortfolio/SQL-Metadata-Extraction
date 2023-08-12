@@ -1,0 +1,20 @@
+–Query 01
+-In this first query we are just using sys.dm_db_index_usage_stats and sys.objects to get a list of the indexes that have been used and how they are being used.-
+
+SELECT DB_NAME(DATABASE_ID) AS DATABASENAME, 
+       SCHEMA_NAME(C.SCHEMA_id) AS SCHEMANAME, 
+       OBJECT_NAME(B.OBJECT_ID) AS TABLENAME, 
+       INDEX_NAME = (SELECT NAME 
+                     FROM   SYS.INDEXES A 
+                     WHERE  A.OBJECT_ID = B.OBJECT_ID 
+                       AND  A.INDEX_ID = B.INDEX_ID), 
+       USER_SEEKS, 
+       USER_SCANS, 
+       USER_LOOKUPS, 
+       USER_UPDATES 
+FROM   SYS.DM_DB_INDEX_USAGE_STATS B 
+       INNER JOIN SYS.OBJECTS C ON B.OBJECT_ID = C.OBJECT_ID 
+WHERE  DATABASE_ID = DB_ID(DB_NAME()) 
+       AND C.TYPE = 'U' 
+
+

@@ -1,0 +1,2 @@
+SELECT OBJECT_NAME(OBJECT_ID) Name, type_desc, fill_factor
+FROM sys.indexes
